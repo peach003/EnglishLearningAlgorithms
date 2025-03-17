@@ -3,7 +3,7 @@ import unittest
 from unittest.mock import patch, MagicMock
 import torch
 import pandas as pd
-import train_transformer
+from Transformer import train_transformer 
 from torch.utils.data import DataLoader
 
 class TestTrainTransformer(unittest.TestCase):
