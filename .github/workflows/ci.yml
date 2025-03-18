@@ -28,4 +28,5 @@ jobs:
 
       - name: Run tests
         run: |
-          python -m unittest discover tests/  
+          python -m unittest discover -s Transformer -p "test_train_transformer.py"
+ 
