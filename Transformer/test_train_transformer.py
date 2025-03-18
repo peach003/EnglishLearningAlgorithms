@@ -6,21 +6,20 @@ from torch.utils.data import DataLoader
 
 class TestTrainTransformer(unittest.TestCase):
 
-  
     @patch('train_transformer.FamiliarityTransformer')
     @patch('train_transformer.optim.Adam')
     def test_model_training(self, mock_Adam, mock_FamiliarityTransformer):
         """
-        测试模型训练过程
+        Test the model training process without involving any database.
         """
-        # 模拟模型和优化器
+        # Mock the model and optimizer
         mock_model = MagicMock()
         mock_FamiliarityTransformer.return_value = mock_model
-        
+
         mock_optimizer = MagicMock()
         mock_Adam.return_value = mock_optimizer
 
-        # 模拟数据
+        # Mock the data (no database involvement)
         mock_df = pd.DataFrame({
             'UserId': [1, 1, 2],
             'WordId': [1, 2, 3],  # Ensure 'WordId' column is correctly provided
@@ -28,34 +27,35 @@ class TestTrainTransformer(unittest.TestCase):
             'Familiarity': [0.8, 0.9, 0.7],
             'CreatedAt': ['2022-01-01', '2022-01-02', '2022-01-03']
         })
-        
-        # 模拟数据集
+
+        # Mock the dataset
         dataset = train_transformer.FamiliarityDataset(mock_df)
         dataloader = DataLoader(dataset, batch_size=2, shuffle=True)
 
-        # 测试训练循环
-        for epoch in range(1):  # 只训练1个epoch
+        # Test the training loop (1 epoch)
+        for epoch in range(1):  # Only 1 epoch for testing
             for _, _ in dataloader:
                 mock_model.zero_grad()
                 mock_optimizer.step()
-                
-        # 验证模型是否执行了反向传播和优化
+
+        # Verify that backward pass and optimizer step were called
         mock_model.zero_grad.assert_called()
         mock_optimizer.step.assert_called()
 
     @patch('train_transformer.torch.save')
     def test_model_saving(self, mock_save):
         """
-        测试模型保存功能
+        Test the model saving functionality without database involvement.
         """
-        # 模拟模型
+        # Mock the model
         mock_model = MagicMock()
-        
-        # 调用模型保存方法
+
+        # Call the model save method
         train_transformer.torch.save(mock_model.state_dict(), "familiarity_transformer.pth")
-        
-        # 确保保存函数被调用
+
+        # Ensure the save function was called correctly
         mock_save.assert_called_once_with(mock_model.state_dict(), "familiarity_transformer.pth")
+
 
 if __name__ == '__main__':
     unittest.main()
